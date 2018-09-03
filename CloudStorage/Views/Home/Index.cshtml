@@ -1,0 +1,26 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style type="text/css">
+    .error {
+        color:red;
+    }
+</style>
+
+<h2>Please Choose a File</h2>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <h4 class="error">@ViewBag.ErrorMessage</h4>
+}
+
+@using (Html.BeginForm("UploadFileToServer", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <label for="file">Upload file:</label>
+    <input type="file" name="file" id="file" />
+    <input type="submit" value="Upload" />
+}
+
