@@ -1,9 +1,14 @@
-﻿
-@{
-    ViewBag.Title = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+﻿@{
+    ViewBag.Title = "Home Page";
 }
 
-<h2>Index</h2>
-<h3>OneDrive</h3>
-
+<div class="form-group" style="margin-top:30px">
+    <form action="UploadFileAndGetShareUri" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="exampleInputFile">File input</label>
+            <input type="file" name="file" />
+            <p class="help-block">try upload office file or pdf.</p>
+        </div>
+        <button type="submit" class="btn btn-default">Upload</button>
+    </form>
+</div>

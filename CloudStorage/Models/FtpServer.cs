@@ -8,12 +8,16 @@ namespace CloudStorage.Models
 {
     public class FtpServer
     {
+        public int Id { get; set; }
+        public int UserId { get; set; }
         [Required]
         [Display(Name = "FTP Server Address")]
-        public string Address { get; set; }
+        public string Host { get; set; }
         [Required]
         public string Username { get; set; }
         [Required]
         public string Password { get; set; }
+
+        
     }
 }

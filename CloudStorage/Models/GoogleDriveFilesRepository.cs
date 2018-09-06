@@ -5,6 +5,7 @@ using Google.Apis.Services;
 using Google.Apis.Util.Store;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -202,7 +203,7 @@ namespace CloudStorage.Models
             return file.Id;
         }
 
-        public static void UploadFileInGoogleDriveFolder(string folderId, string fileName)
+        public static void UploadFileToGoogleDriveFolder(string folderId, string fileName)
         {
             DriveService service = GetService();
 
@@ -259,7 +260,7 @@ namespace CloudStorage.Models
             //HttpContext.Current.Session["folderId"] = folderId;
 
             // Upload file to the folder
-            UploadFileInGoogleDriveFolder(folderId, fileName);
+            UploadFileToGoogleDriveFolder(folderId, fileName);
 
         }
 
@@ -363,6 +364,55 @@ namespace CloudStorage.Models
             {
                 throw new Exception("Request Files.Delete failed.", ex);
             }
+        }
+
+        //create Drive API service.  
+        //////// USERD FOR STEP 2
+        public static DriveService RegisterService()
+        {
+            //get Credentials from client_secret.json file 
+            UserCredential credential;
+
+            // Get running directory
+            string runningDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+
+            using (var stream = new FileStream(runningDirectory + "credentials.json", FileMode.Open, FileAccess.Read))
+            {
+                // Get user id from session
+                int userId = (int?)System.Web.HttpContext.Current.Session["UserId"] ?? 0;
+
+                // ERROR HANDLE NEEDED
+                if (userId <= 0 )
+                {
+                    return null;
+                }
+
+                string credPath = runningDirectory + "UserCredentials\\" + "ServiceCredentials.json" + "." + userId;
+
+                try
+                {
+                    credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
+                                        GoogleClientSecrets.Load(stream).Secrets,
+                                        Scopes,
+                                        "user",
+                                        CancellationToken.None,
+                                        new FileDataStore(credPath, true)).Result;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                    return null;
+                }
+                
+            }
+
+            //create Drive API service.
+            DriveService service = new DriveService(new BaseClientService.Initializer()
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "GoogleDriveRestAPI-v3",
+            });
+            return service;
         }
     }
 }

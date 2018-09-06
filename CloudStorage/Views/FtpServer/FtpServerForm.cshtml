@@ -19,7 +19,7 @@
     <h4 class="error">@ViewBag.ErrorMessage</h4>
 }
 
-@using (Html.BeginForm("UploadFileToFtpServer", "FtpServer", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("ProcessForm", "FtpServer", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @*Html.ValidationSummary(true, "Please fix the following erros")*@
 

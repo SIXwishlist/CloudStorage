@@ -1,0 +1,27 @@
+﻿@model CloudStorage.Models.User
+@{
+    ViewBag.Title = "AskNeedCloudService";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@* User has registered cloud service*@
+@if (Model.CloudServiceRegistered)
+{
+    <h2>Are you going to Unregister Cloud Storage Service?</h2>
+
+    <p>
+        @Html.ActionLink("Yes", "UnregisterCloudService", "User", new { choose = "Yes" }, new { @class = "btn btn-primary" })
+        @Html.ActionLink("No", "UnregisterCloudService", "User", new { choose = "No" }, new { @class = "btn btn-primary" })
+    </p>
+}
+@* User has not registered cloud service yet*@
+else
+{
+    <h2>Are you going to Register Cloud Storage Service?</h2>
+
+    <p>
+        @Html.ActionLink("Yes", "ChooseCloudStorage", "User", new { choose = "Yes" }, new { @class = "btn btn-primary" })
+        @Html.ActionLink("No", "ChooseCloudStorage", "User", new { choose = "No" }, new { @class = "btn btn-primary" })
+    </p>
+}
+

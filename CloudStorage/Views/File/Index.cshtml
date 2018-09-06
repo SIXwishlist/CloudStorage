@@ -1,0 +1,13 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Are you going to upload file to Cloud Storage?</h2>
+<h3>The action will upload files to Google Drive, One Drive, or Ftp Server as per user's wish.</h3>
+
+<p>
+    @Html.ActionLink("Yes", "Upload", "File", new { choose = "Yes" }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("No", "Upload", "File", new { choose = "No" }, new { @class = "btn btn-primary" })
+</p>

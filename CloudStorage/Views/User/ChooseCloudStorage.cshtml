@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewBag.Title = "ChooseCloudStorage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Please Choose a Cloud Storage</h2>
+
+
+<a href="@Url.Action("GoogleDriveleAuthentication", "User")">
+    <img src="/img/google-drive-log.png" width="300" />
+</a>
+<br />
+<a href="@Url.Action("OneDriveAnthentication", "User")">
+    <img src="/img/OneDrive-Logo.png" width="300" />
+</a>
+<br />
+<a href="@Url.Action("FtpServerAuthentication", "User")">
+    <img src="/img/FTP_SFTP-logo.png" width="300" />
+</a>
+
+
