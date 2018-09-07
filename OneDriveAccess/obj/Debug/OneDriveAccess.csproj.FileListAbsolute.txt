@@ -1,4 +1,3 @@
-C:\Users\wjing\Desktop\SMC\Project\CloudStorage\OneDriveAccess\obj\Debug\OneDriveAccess.csprojAssemblyReference.cache
 C:\Users\wjing\Desktop\SMC\Project\CloudStorage\OneDriveAccess\obj\Debug\OneDriveAccess.csproj.CoreCompileInputs.cache
 C:\Users\wjing\Desktop\SMC\Project\CloudStorage\OneDriveAccess\bin\Debug\OneDriveAccess.dll.config
 C:\Users\wjing\Desktop\SMC\Project\CloudStorage\OneDriveAccess\bin\Debug\OneDriveAccess.dll

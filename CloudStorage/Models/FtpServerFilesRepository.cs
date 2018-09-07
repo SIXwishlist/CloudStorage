@@ -10,27 +10,90 @@ namespace CloudStorage.Models
 {
     public class FtpServerFilesRepository
     {
+        // ONLY FOR TEST
         public static FtpClient GetFtpClient()
         {
-            /**
-             * WILL IMPLEMENT
-             * HARD CODE JUST FOR TESTING
-             */
 
-            // Get ftp host and credential info from DB, 
-            //FtpServer ftpServer = null; 
-
-            // Set Ftp host and credential info
-            //string host = ftpServer.Address;
-            //string username = ftpServer.Username;
-            //string password = ftpServer.Password;
-
-            // connect to the FTP server
+            // Intiailize a FTP server
             FtpClient client = new FtpClient();
             client.Host = "jacchriswang.sharefileftp.com";  
             client.Credentials = new System.Net.NetworkCredential("jacChrisWang/WJING.CA@GMAIL.COM", "dalian2$maritimE");
 
             return client;
+        }
+
+        public static FtpClient GetFtpClientByUserId(int userId)
+        {
+            // Get FTP info by user id
+            FtpServer ftpServer = UserRepository.GetFtpServerByUserId(userId);
+
+            // Intiailize a FTP server
+            FtpClient client = new FtpClient();
+            client.Host = ftpServer.Host;
+            client.Credentials = new System.Net.NetworkCredential(ftpServer.Username, ftpServer.Password);
+
+            //client.Host = "jacchriswang.sharefileftp.com";  
+            //client.Credentials = new System.Net.NetworkCredential("jacChrisWang/WJING.CA@GMAIL.COM", "dalian2$maritimE");
+
+            return client;
+        }
+
+        public static void UploadFilesToFtpServer(int userId, FileInfo[] files)
+        {
+            // Get FtpClient
+            FtpClient client = GetFtpClientByUserId(userId);
+
+            
+
+            try
+            {
+                // Connect to FTP Server
+                client.Connect();
+
+                // Check if the folder has been existing
+                bool isFolderExists = client.DirectoryExists("/" + Globals.CLOUD_EVATEL_FOLDER + "/");
+
+                // When folder is not existing, create a new folder
+                if (!isFolderExists)
+                {
+                    client.CreateDirectory(Globals.CLOUD_EVATEL_FOLDER);
+                }
+
+                // Set working direcotry
+                client.SetWorkingDirectory("/" + Globals.CLOUD_EVATEL_FOLDER + "/");
+
+                
+
+            }
+            catch (Exception ex)
+            {
+                //ViewBag.ErrorMessage = Globals.FTP_CONNECTION_ERROR + "\n" + ex.Message;
+                //return View("FtpServerForm");
+
+                // Error handle will be done
+                Debug.WriteLine("FTP connection error, " + ex.Message);
+            }
+
+
+            // Loop and upload all files to FTP Server
+            foreach (FileInfo file in files)
+            {
+                try
+                {
+                    // upload a file
+                    bool result = client.UploadFile(file.FullName, file.Name);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Upload error, " + ex.Message);
+                }
+
+            }
+
+
+            client.Dispose();
+
+
         }
 
         public static void UploadFileToFtpServer(string fileName)

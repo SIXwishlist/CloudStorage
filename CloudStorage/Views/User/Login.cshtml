@@ -8,7 +8,7 @@
 <h2>Login</h2>
 
 
-@using (Html.BeginForm("Login", "User"))
+@using (Html.BeginForm("Login", "User", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.ValidationSummary(true, "Please fix the following erros")
 

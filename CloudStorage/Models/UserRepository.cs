@@ -18,6 +18,7 @@ namespace CloudStorage.Models
 
             try
             {
+                
                 _context.Users.Add(user);
                 _context.SaveChanges();
                 userId = user.Id;
@@ -34,7 +35,7 @@ namespace CloudStorage.Models
         public static User Login(User user)
         {
             // Get user from DB according to login info
-            User userInDB = _context.Users.First(u => u.Username.Equals(user.Username));
+            User userInDB = _context.Users.FirstOrDefault(u => u.Username.Equals(user.Username));
             
             if (userInDB != null && userInDB.Password.Equals(user.Password))
             {
@@ -99,5 +100,22 @@ namespace CloudStorage.Models
             }
             
         }
+
+        /**
+         * Fetch all users who registered Cloud service  
+         * 
+         */
+        public static List<User> GetAllUsersWithCloudServie()
+        {
+            return _context.Users.Where(u => u.CloudServiceRegistered == true).ToList();
+        }
+
+
+        public static FtpServer GetFtpServerByUserId(int userId)
+        {
+            return _context.FtpServers.FirstOrDefault(f => f.UserId == userId);
+        }
+
+
     }
 }

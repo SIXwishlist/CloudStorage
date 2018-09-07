@@ -7,7 +7,7 @@
 
 <h2>Register</h2>
 
-@using (Html.BeginForm("Register", "User"))
+@using (Html.BeginForm("Register", "User", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.ValidationSummary(true, "Please fix the following erros")
 

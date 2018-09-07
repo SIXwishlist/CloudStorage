@@ -56,7 +56,7 @@ namespace CloudStorage.Models
             DriveService service = GetService();
 
             // Get Folder ID for Evatel sound records
-            string folderId = GetGoogleDriveFolderId(Globals.CLOUD_EVATEL_FOLDER);
+            string folderId = GetGoogleDriveFolderId(Globals.CLOUD_EVATEL_FOLDER, service);
             List<CloudStorageFile> fileList = new List<CloudStorageFile>();
             string pageToken = null;
 
@@ -88,38 +88,7 @@ namespace CloudStorage.Models
 
             return fileList;
 
-
-
-            //DriveService service = GetService();
-
-            //// define parameters of request.
-            //FilesResource.ListRequest FileListRequest = service.Files.List();
-
-            ////listRequest.PageSize = 10;
-            ////listRequest.PageToken = 10;
-            //FileListRequest.Fields = "nextPageToken, files(id, name, size, version, createdTime)";
-
-            ////get file list.
-            //IList<Google.Apis.Drive.v3.Data.File> files = FileListRequest.Execute().Files;
-            //List<GoogleDriveFiles> FileList = new List<GoogleDriveFiles>();
-
-            //if (files != null && files.Count > 0)
-            //{
-            //    foreach (var file in files)
-            //    {
-            //        GoogleDriveFiles File = new GoogleDriveFiles
-            //        {
-            //            Id = file.Id,
-            //            Name = file.Name,
-            //            Size = file.Size,
-            //            Version = file.Version,
-            //            CreatedTime = file.CreatedTime
-            //        };
-            //        FileList.Add(File);
-            //    }
-            //}
-            //return FileList;
-        }
+        }    
 
         //get all files from Google Drive.
         public static List<CloudStorageFile> GetDriveFiles()
@@ -156,9 +125,9 @@ namespace CloudStorage.Models
         }
 
         // Get goodle drive Folder ID
-        public static string GetGoogleDriveFolderId(string folderName)
+        public static string GetGoogleDriveFolderId(string folderName, DriveService service)
         {
-            DriveService service = GetService();
+            //DriveService service = GetService();
 
             // Get Folder ID for Evatel sound records
             string folderId = null;
@@ -185,12 +154,12 @@ namespace CloudStorage.Models
             return folderId;
         }
 
-        public static string CreateFolderOnGoogleDriver()
+        public static string CreateFolderOnGoogleDriver(string folderName, DriveService service)
         {
-            DriveService service = GetService();
+            //DriveService service = GetService();
 
             Google.Apis.Drive.v3.Data.File fileMeta = new Google.Apis.Drive.v3.Data.File();
-            fileMeta.Name = Globals.CLOUD_EVATEL_FOLDER;
+            fileMeta.Name = folderName;
             fileMeta.MimeType = "application/vnd.google-apps.folder";
 
             Google.Apis.Drive.v3.FilesResource.CreateRequest request;
@@ -203,10 +172,26 @@ namespace CloudStorage.Models
             return file.Id;
         }
 
-        public static void UploadFileToGoogleDriveFolder(string folderId, string fileName)
+        //file Upload to the Google Drive.
+        public static void UploadFileToGoogleDrive(string fileName)
         {
+
             DriveService service = GetService();
 
+            // Get folder id of evatel sound records 
+            string folderId = GetGoogleDriveFolderId(Globals.CLOUD_EVATEL_FOLDER, service);
+
+            // Folder has not been existing yet
+            if (folderId == null)
+            {
+                // Create a Evatel folder, and return folder id
+                folderId = CreateFolderOnGoogleDriver(Globals.CLOUD_EVATEL_FOLDER, service);
+            }
+
+            // Save folderId to session
+            //HttpContext.Current.Session["folderId"] = folderId;
+
+            // Upload file to the folder           
             string path = Path.Combine(HttpContext.Current.Server.MapPath("~/CloudStorageFiles"),
             fileName);
 
@@ -238,102 +223,63 @@ namespace CloudStorage.Models
             /**
              * going to check if uploading is successful
              */
+
         }
 
-        //file Upload to the Google Drive.
-        public static void UploadFileToGoogleDrive(string fileName)
+
+        public static void UploadFilesToGoogleDriveFolder(int userId, FileInfo[] files)
         {
 
-            DriveService service = GetService();
+            DriveService service = RegisterServiceByUserId(userId);
 
             // Get folder id of evatel sound records 
-            string folderId = GetGoogleDriveFolderId(Globals.CLOUD_EVATEL_FOLDER);
+            string folderId = GetGoogleDriveFolderId(Globals.CLOUD_EVATEL_FOLDER, service);
 
             // Folder has not been existing yet
             if (folderId == null)
             {
                 // Create a Evatel folder, and return folder id
-                folderId = CreateFolderOnGoogleDriver();
+                folderId = CreateFolderOnGoogleDriver(Globals.CLOUD_EVATEL_FOLDER, service);
             }
 
-            // Save folderId to session
-            //HttpContext.Current.Session["folderId"] = folderId;
-
-            // Upload file to the folder
-            UploadFileToGoogleDriveFolder(folderId, fileName);
-
-        }
-
-
-
-        ////file Upload to the Google Drive.
-        //public static void FileUpload(HttpPostedFileBase file)
-        //{
-        //    if (file != null && file.ContentLength > 0)
-        //    {
-        //        DriveService service = GetService();
-
-        //        string path = Path.Combine(HttpContext.Current.Server.MapPath("~/CloudStorageFiles"),
-        //        Path.GetFileName(file.FileName));
-
-        //        file.SaveAs(path);
-
-        //        var FileMetaData = new Google.Apis.Drive.v3.Data.File();
-        //        FileMetaData.Name = Path.GetFileName(file.FileName);
-        //        FileMetaData.MimeType = MimeMapping.GetMimeMapping(path);
-
-        //        FilesResource.CreateMediaUpload request;
-
-        //        using (var stream = new System.IO.FileStream(path, System.IO.FileMode.Open))
-        //        {
-        //            request = service.Files.Create(FileMetaData, stream, FileMetaData.MimeType);
-        //            request.Fields = "id";
-        //            request.Upload();
-        //        }
-        //    }
-        //}
-
-        //Download file from Google Drive by fileId.
-        public static string DownloadGoogleFile(string fileId)
-        {
-            DriveService service = GetService();
-
-            string FolderPath = System.Web.HttpContext.Current.Server.MapPath("/GoogleDriveFiles/");
-            FilesResource.GetRequest request = service.Files.Get(fileId);
-
-            string FileName = request.Execute().Name;
-            string FilePath = System.IO.Path.Combine(FolderPath, FileName);
-
-            MemoryStream stream1 = new MemoryStream();
-
-            // Add a handler which will be notified on progress changes.
-            // It will notify on each chunk download and when the
-            // download is completed or failed.
-            request.MediaDownloader.ProgressChanged += (Google.Apis.Download.IDownloadProgress progress) =>
+            // Loop files to upload all files
+            foreach (FileInfo file in files)
             {
-                switch (progress.Status)
+                
+                var FileMetaData = new Google.Apis.Drive.v3.Data.File()
                 {
-                    case DownloadStatus.Downloading:
-                        {
-                            Console.WriteLine(progress.BytesDownloaded);
-                            break;
-                        }
-                    case DownloadStatus.Completed:
-                        {
-                            Console.WriteLine("Download complete.");
-                            SaveStream(stream1, FilePath);
-                            break;
-                        }
-                    case DownloadStatus.Failed:
-                        {
-                            Console.WriteLine("Download failed.");
-                            break;
-                        }
+                    Name = file.Name,
+                    MimeType = MimeMapping.GetMimeMapping(file.FullName),
+                    Parents = new List<string>
+                    {
+                        folderId
+                    }
+                };
+
+
+                FilesResource.CreateMediaUpload request;
+
+                using (var stream = new System.IO.FileStream(file.FullName, System.IO.FileMode.Open))
+                {
+                    request = service.Files.Create(FileMetaData, stream, FileMetaData.MimeType);
+                    request.Fields = "id";
+                    request.Upload();
                 }
-            };
-            request.Download(stream1);
-            return FilePath;
+
+
+                // Clear session
+                //System.Web.HttpContext.Current.Session.Remove("uploadedFileName");
+
+                var uploadedfile = request.ResponseBody;
+                /*********************************
+                 * going to check if uploading is successful
+                 */
+            }
+
+            service.Dispose();
+
         }
+
 
         // file save to server path
         private static void SaveStream(MemoryStream stream, string FilePath)
@@ -368,26 +314,21 @@ namespace CloudStorage.Models
 
         //create Drive API service.  
         //////// USERD FOR STEP 2
-        public static DriveService RegisterService()
+        public static DriveService RegisterServiceByUserId(int userId)
         {
             //get Credentials from client_secret.json file 
             UserCredential credential;
 
             // Get running directory
             string runningDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+            
+            //string credentialJson = 
 
             using (var stream = new FileStream(runningDirectory + "credentials.json", FileMode.Open, FileAccess.Read))
             {
-                // Get user id from session
-                int userId = (int?)System.Web.HttpContext.Current.Session["UserId"] ?? 0;
-
-                // ERROR HANDLE NEEDED
-                if (userId <= 0 )
-                {
-                    return null;
-                }
-
-                string credPath = runningDirectory + "UserCredentials\\" + "ServiceCredentials.json" + "." + userId;
+                
+                //string credPath = runningDirectory + "UserCredentials\\" + "ServiceCredentials.json" + "." + userId;
+                string credPath = HttpContext.Current.Server.MapPath("~/UserCredentials/" + userId);
 
                 try
                 {

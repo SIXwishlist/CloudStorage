@@ -35,7 +35,12 @@ namespace CloudStorage.Controllers
             if (userIdDB != null)
             {
                 System.Web.HttpContext.Current.Session["UserId"] = userIdDB.Id;
-                return View("AskCloudService", userIdDB);
+                
+                // Minimum using of session 
+                //System.Web.HttpContext.Current.Session["CloudService"] = userIdDB.CloudServiceRegistered;
+
+                // put cloud service status in the parameter
+                return RedirectToAction("AskCloudService", new { cloudService = userIdDB.CloudServiceRegistered });
             }
             
             return View();
@@ -50,6 +55,8 @@ namespace CloudStorage.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Register(User user)
         {
+           
+
             // Register user and return user id
             int userId = UserRepository.Register(user);
 
@@ -57,7 +64,10 @@ namespace CloudStorage.Controllers
             if (userId > 0)
             {
                 System.Web.HttpContext.Current.Session["UserId"] = userId;
-                return View("AskCloudService", user);
+                //System.Web.HttpContext.Current.Session["CloudService"] = false;
+
+                // Put the cloud service status in the parameter
+                return RedirectToAction("AskCloudService", new { cloudService = false });
             }
             // registeration failed
             else
@@ -68,6 +78,11 @@ namespace CloudStorage.Controllers
 
         }
 
+        public ActionResult AskCloudService(bool cloudService)
+        {
+            ViewBag.CloudService = cloudService;
+            return View();
+        }
 
         public ActionResult ChooseCloudStorage(string choose)
         {
@@ -84,17 +99,22 @@ namespace CloudStorage.Controllers
 
         public ActionResult GoogleDriveleAuthentication()
         {
+            // Get user id from session
+            int userId = (int?)System.Web.HttpContext.Current.Session["UserId"] ?? 0;
+
+            // Go to user login 
+            if (userId <= 0)
+            {
+                return RedirectToAction("Login");
+            }
+
             // Get Google anthentication
-            DriveService service = GoogleDriveFilesRepository.RegisterService();
+            DriveService service = GoogleDriveFilesRepository.RegisterServiceByUserId(userId);
 
             if (service == null)
             {
                 return Content("Authentication ERROR");
             }
-
-            // Get current user id from session
-            int userId = (int?)System.Web.HttpContext.Current.Session["UserId"] ?? 0;
-            //// ERROR HANDLE NEEDED WHEN session does not exist
 
             // Update cloud service flag in user table 
             UserRepository.UpdateCloudServiceStatus(userId, true, (byte)CloudStorage.Models.User.ServiceType.GoogleDrive);

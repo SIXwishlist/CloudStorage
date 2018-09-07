@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using CloudStorage.Models;
 
 namespace CloudStorage.Controllers
 {
@@ -19,6 +20,8 @@ namespace CloudStorage.Controllers
 
             if (choose.Equals("Yes"))
             {
+                // Uplaod files to Cloud storage
+                FileRepository.UploadFilesToCloud();
 
                 return Content("File uploaded");
             }
@@ -26,6 +29,7 @@ namespace CloudStorage.Controllers
             {
                 return Content("Upload cancelled");
             }
+
         }
     }
 }

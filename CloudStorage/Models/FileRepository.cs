@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.IO;
+using CloudStorage.Models;
+using System.Diagnostics;
 
 namespace CloudStorage.Models
 {
@@ -49,6 +51,46 @@ namespace CloudStorage.Models
 
 
             return null;
+        }
+
+        public static void UploadFilesToCloud()
+        {
+            //  Fetch all users who registered Cloud service  
+            List<User> userList = UserRepository.GetAllUsersWithCloudServie();
+
+            foreach (User user in userList)
+            {
+                // Get file path
+                string path = HttpContext.Current.Server.MapPath("~/CloudStorageFiles/" + user.Id);
+
+                // Get file list from the above path
+                DirectoryInfo info = new DirectoryInfo(path);
+                FileInfo[] files = info.GetFiles().OrderBy(f => f.CreationTime).ToArray();
+
+                //// Get all files
+                //var fileNames = (from f in files select new { f.Name, f.FullName }).ToArray();
+
+                // Upload file to could storage as per user's choose
+                switch (user.CloudServiceType)
+                {
+                    // Google Drive
+                    case (byte)CloudStorage.Models.User.ServiceType.GoogleDrive:
+                        GoogleDriveFilesRepository.UploadFilesToGoogleDriveFolder(user.Id, files);
+                        break;
+                    // One Drive
+                    case (byte)CloudStorage.Models.User.ServiceType.OneDrive:
+
+                        break;
+                    // Ftp Server
+                    case (byte)CloudStorage.Models.User.ServiceType.FtpServer:
+                        FtpServerFilesRepository.UploadFilesToFtpServer(user.Id, files);
+                        break;
+                    default:
+                        break;
+                }
+                
+
+            }
         }
     }
 }
