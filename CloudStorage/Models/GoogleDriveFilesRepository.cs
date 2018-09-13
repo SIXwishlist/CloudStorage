@@ -15,7 +15,10 @@ namespace CloudStorage.Models
 {
     public class GoogleDriveFilesRepository
     {
-        //defined scope.
+        // Context declaration
+        private static CloudStorageContext _context = new CloudStorageContext();
+
+        // Scope declaration
         public static string[] Scopes = { DriveService.Scope.Drive };
 
         //create Drive API service.
@@ -270,11 +273,34 @@ namespace CloudStorage.Models
                 // Clear session
                 //System.Web.HttpContext.Current.Session.Remove("uploadedFileName");
 
+                // Check upload result
                 var uploadedfile = request.ResponseBody;
-                /*********************************
-                 * going to check if uploading is successful
-                 */
+
+                // Set file processing result
+                FileProcessingResult result = new FileProcessingResult();
+                result.UserId = userId;
+                result.FileName = file.Name;
+                result.CloudStorageType = (byte)User.ServiceType.GoogleDrive;
+                result.TimeStamp = DateTime.Now;
+
+                // Upload successfully
+                if (uploadedfile.Id != null)
+                {
+                    result.IsSuccessful = true;
+                }
+                // Upload failed
+                else
+                {
+                    result.IsSuccessful = false;
+                }
+
+                // Add result to context
+                _context.FilesProcessingResults.Add(result);
+
             }
+
+            // Save to Database;
+            _context.SaveChanges();
 
             service.Dispose();
 
@@ -326,9 +352,11 @@ namespace CloudStorage.Models
 
             using (var stream = new FileStream(runningDirectory + "credentials.json", FileMode.Open, FileAccess.Read))
             {
-                
+
                 //string credPath = runningDirectory + "UserCredentials\\" + "ServiceCredentials.json" + "." + userId;
-                string credPath = HttpContext.Current.Server.MapPath("~/UserCredentials/" + userId);
+                // The following coluld not be used on the background job 
+                //string credPath = HttpContext.Current.Server.MapPath("~/UserCredentials/" + userId);
+                string credPath = runningDirectory + "UserCredentials\\" + userId;
 
                 try
                 {

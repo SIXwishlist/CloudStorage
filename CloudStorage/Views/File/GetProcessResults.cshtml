@@ -1,0 +1,92 @@
+﻿@model IEnumerable<CloudStorage.Models.FileProcessingResult>
+@{
+    ViewBag.Title = "GetProcessResults";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>File Process Results</h2>
+
+<center>
+
+    <table class="table" border="1">
+        <tr id="header">
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FileName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CloudStorageType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TimeStamp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsSuccessful)
+            </th>
+            <!--
+        <th>
+            Download
+        </th>
+        <th>
+            Delete
+        </th>
+    -->
+        </tr>
+
+        @if (Model.Count() > 0)
+        {
+            foreach (var item in Model)
+            {
+        <tr id="layouttable">
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FileName)
+            </td>
+            <td>
+                @{
+                    string typeStr = null;
+
+                    if (item.CloudStorageType == (byte)CloudStorage.Models.User.ServiceType.GoogleDrive)
+                    {
+                        typeStr = "GoogleDrive";
+                    }
+                    else if (item.CloudStorageType == (byte)CloudStorage.Models.User.ServiceType.OneDrive)
+                    {
+                        typeStr = "OneDrive";
+                    }
+                    else if (item.CloudStorageType == (byte)CloudStorage.Models.User.ServiceType.FtpServer)
+                    {
+                        typeStr = "FtpServer";
+                    }
+                }
+                @typeStr
+            </td>
+            <td>
+                @string.Format("{0: MM/dd/yyyy hh:mm:ss}", Convert.ToDateTime(Html.DisplayFor(modelItem => item.TimeStamp).ToString()))
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsSuccessful)
+            </td>
+           
+        </tr>
+            }
+        }
+        else
+        {
+            <tr><td colspan="6">No files found</td></tr>
+        }
+
+    </table>
+
+</center>
+

@@ -102,3 +102,7 @@ C:\Users\wjing\Desktop\SMC\Project\CloudStorage\CloudStorage\bin\EntityFramework
 C:\Users\wjing\Desktop\SMC\Project\CloudStorage\CloudStorage\bin\EntityFramework.SqlServer.xml
 C:\Users\wjing\Desktop\SMC\Project\CloudStorage\CloudStorage\obj\Debug\CloudStorage.Migrations.InitialMigration.resources
 C:\Users\wjing\Desktop\SMC\Project\CloudStorage\CloudStorage\obj\Debug\CloudStorage.csproj.GenerateResource.cache
+C:\Users\wjing\Desktop\SMC\Project\CloudStorage\CloudStorage\bin\Quartz.dll
+C:\Users\wjing\Desktop\SMC\Project\CloudStorage\CloudStorage\bin\Quartz.pdb
+C:\Users\wjing\Desktop\SMC\Project\CloudStorage\CloudStorage\bin\Quartz.xml
+C:\Users\wjing\Desktop\SMC\Project\CloudStorage\CloudStorage\obj\Debug\CloudStorage.Migrations.AddFileProcessingResultTable.resources

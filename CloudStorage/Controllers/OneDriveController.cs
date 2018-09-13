@@ -30,11 +30,11 @@ namespace CloudStorage.Controllers
         /// <summary>
         /// clientId of you office 365 application, you can find it in https://apps.dev.microsoft.com/
         /// </summary>
-        private const string ClientId = "714ef17a-3e1c-4f21-875b-22544bca57fa";
+        private const string ClientId = "294963ea-bf22-47d8-9ad8-8bed61b121b6";
         /// <summary>
         /// Password/Public Key of you office 365 application, you can find it in https://apps.dev.microsoft.com/
         /// </summary>
-        private const string Secret = "tamrN124(!vfpRXHGFL06$]";
+        private const string Secret = "gclknvGDK21?%nYYXA755_:";
         /// <summary>
         /// Authentication callback url, you can set it in https://apps.dev.microsoft.com/
         /// </summary>

@@ -10,6 +10,9 @@ namespace CloudStorage.Models
 {
     public class FtpServerFilesRepository
     {
+        // Context declaration
+        private static CloudStorageContext _context = new CloudStorageContext();
+
         // ONLY FOR TEST
         public static FtpClient GetFtpClient()
         {
@@ -81,7 +84,28 @@ namespace CloudStorage.Models
                 try
                 {
                     // upload a file
-                    bool result = client.UploadFile(file.FullName, file.Name);
+                    bool uploadedResult = client.UploadFile(file.FullName, file.Name);
+
+                    // Set file processing result
+                    FileProcessingResult result = new FileProcessingResult();
+                    result.UserId = userId;
+                    result.FileName = file.Name;
+                    result.CloudStorageType = (byte)User.ServiceType.FtpServer;
+                    result.TimeStamp = DateTime.Now;
+
+                    // Upload successfully
+                    if (uploadedResult)
+                    {
+                        result.IsSuccessful = true;
+                    }
+                    // Upload failed
+                    else
+                    {
+                        result.IsSuccessful = false;
+                    }
+
+                    // Add result to context
+                    _context.FilesProcessingResults.Add(result);
                 }
                 catch (Exception ex)
                 {
@@ -90,6 +114,8 @@ namespace CloudStorage.Models
 
             }
 
+            // Save to Database;
+            _context.SaveChanges();
 
             client.Dispose();
 

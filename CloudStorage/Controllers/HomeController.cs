@@ -15,7 +15,7 @@ namespace CloudStorage.Controllers
 
         public ActionResult UploadFileToServer(HttpPostedFileBase file)
         {
-            string result = FileRepository.FileUploadToServer(file);
+            string result = FileRepository.UploadFileToServer(file);
 
             // Choose which cloud storage 
             if (result == null)

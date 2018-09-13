@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using CloudStorage.JobUtility;
 
 namespace CloudStorage
 {
@@ -13,6 +14,8 @@ namespace CloudStorage
         {
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+
+            //JobScheduler.Run();
         }
     }
 }

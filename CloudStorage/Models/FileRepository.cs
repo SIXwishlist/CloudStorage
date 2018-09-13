@@ -10,8 +10,11 @@ namespace CloudStorage.Models
 {
     public class FileRepository
     {
+        // Context declaration
+        private static CloudStorageContext _context = new CloudStorageContext();
+
         //file Upload to the Server.
-        public static string FileUploadToServer(HttpPostedFileBase file)
+        public static string UploadFileToServer(HttpPostedFileBase file)
         {
             // No file was chosen
             if (file == null)
@@ -61,7 +64,12 @@ namespace CloudStorage.Models
             foreach (User user in userList)
             {
                 // Get file path
-                string path = HttpContext.Current.Server.MapPath("~/CloudStorageFiles/" + user.Id);
+                // The following could not be used in background job
+                //string path = HttpContext.Current.Server.MapPath("~/CloudStorageFiles/" + user.Id);
+
+                // Get running directory
+                string runningDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+                string path = runningDirectory + "CloudStorageFiles\\" + user.Id;
 
                 // Get file list from the above path
                 DirectoryInfo info = new DirectoryInfo(path);
@@ -91,6 +99,18 @@ namespace CloudStorage.Models
                 
 
             }
+        }
+
+        // Get process result for a specific date 
+        public static List<FileProcessingResult> GetProcessResults(DateTime date)
+        {
+            DateTime endTime = date.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
+            DateTime startTime = date.Date.AddHours(0).AddMinutes(0).AddSeconds(0);
+
+            return _context.FilesProcessingResults.Where(r =>
+                r.TimeStamp <= endTime &&
+                r.TimeStamp >= startTime).ToList();
+            
         }
     }
 }

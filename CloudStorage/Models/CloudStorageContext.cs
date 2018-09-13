@@ -10,6 +10,9 @@ namespace CloudStorage.Models
     {
         public DbSet<User> Users { get; set; }
         public DbSet<FtpServer> FtpServers { get; set; }
+        
+        public DbSet<FileProcessingResult> FilesProcessingResults { get; set; }
+        
 
         public CloudStorageContext()
         {

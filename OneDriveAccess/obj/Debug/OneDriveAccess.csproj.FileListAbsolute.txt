@@ -18,3 +18,4 @@ C:\Users\wjing\Desktop\SMC\Project\CloudStorage\OneDriveAccess\bin\Debug\EntityF
 C:\Users\wjing\Desktop\SMC\Project\CloudStorage\OneDriveAccess\bin\Debug\EntityFramework.SqlServer.dll
 C:\Users\wjing\Desktop\SMC\Project\CloudStorage\OneDriveAccess\bin\Debug\EntityFramework.xml
 C:\Users\wjing\Desktop\SMC\Project\CloudStorage\OneDriveAccess\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\wjing\Desktop\SMC\Project\CloudStorage\OneDriveAccess\obj\Debug\OneDriveAccess.csprojAssemblyReference.cache

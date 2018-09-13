@@ -23,13 +23,19 @@ namespace CloudStorage.Controllers
                 // Uplaod files to Cloud storage
                 FileRepository.UploadFilesToCloud();
 
-                return Content("File uploaded");
+                return RedirectToAction("GetProcessResults");
             }
             else
             {
                 return Content("Upload cancelled");
             }
 
+        }
+
+        public ActionResult GetProcessResults()
+        {
+            List<FileProcessingResult> results = FileRepository.GetProcessResults(DateTime.Now);
+            return View(results);
         }
     }
 }
